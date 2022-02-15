@@ -1,96 +1,91 @@
-/**
- * Sample React Native App
- * https://github.com/facebook/react-native
- *
- * @format
- * @flow strict-local
- */
+import React, { useCallback, useEffect, useState } from 'react';
 
-import React from 'react';
-import type {Node} from 'react';
-import {
-  SafeAreaView,
-  ScrollView,
-  StatusBar,
-  StyleSheet,
-  Text,
-  useColorScheme,
-  View,
-} from 'react-native';
+import { ScrollView, StyleSheet, Text, TouchableOpacity } from 'react-native';
+import { getBuildIdSync, getBundleId, getDeviceId, getIpAddress, getModel, getSystemVersion } from 'react-native-device-info';
+import { addOrientationListener, removeOrientationListener } from 'react-native-orientation';
+import { SafeAreaView } from 'react-native-safe-area-context';
 
-import {
-  Colors,
-  DebugInstructions,
-  Header,
-  LearnMoreLinks,
-  ReloadInstructions,
-} from 'react-native/Libraries/NewAppScreen';
+import Colors from './src/assets/colors';
+import NuriDocumentPicker from './src/components/NuriDocumentPicker';
+import NuriHeader from './src/components/NuriHeader';
+import NuriSection from './src/components/NuriSection';
+import { openLink } from './src/utils';
 
-const Section = ({children, title}): Node => {
-  const isDarkMode = useColorScheme() === 'dark';
+const App: () => React.FC = () => {
+  const [currentOrientation, setCurrentOrientation] = useState('');
+  const [url] = useState('https://nuriCodingChallenge/');
+  const [statusBarStyle] = useState('dark-content');
+  const [ip, setIp] = useState('');
+  let isDarkMode;
+
+  useEffect(() => {
+    addOrientationListener((orientation) => {
+      setCurrentOrientation(orientation);
+    });
+    getIpAddress().then(ip => {
+      setIp(ip);
+    })
+    return () => {
+      removeOrientationListener();
+    };
+  }, []);
+//  console.log('promise: ', result)
+  const onOpenLink = useCallback(async () => {
+    await openLink(url, statusBarStyle);
+  }, [url, statusBarStyle]);
   return (
-    <View style={styles.sectionContainer}>
-      <Text
-        style={[
-          styles.sectionTitle,
-          {
-            color: isDarkMode ? Colors.white : Colors.black,
-          },
-        ]}>
-        {title}
-      </Text>
-      <Text
-        style={[
-          styles.sectionDescription,
-          {
-            color: isDarkMode ? Colors.light : Colors.dark,
-          },
-        ]}>
-        {children}
-      </Text>
-    </View>
-  );
-};
-
-const App: () => Node = () => {
-  const isDarkMode = useColorScheme() === 'dark';
-
-  const backgroundStyle = {
-    backgroundColor: isDarkMode ? Colors.darker : Colors.lighter,
-  };
-
-  return (
-    <SafeAreaView style={backgroundStyle}>
-      <StatusBar barStyle={isDarkMode ? 'light-content' : 'dark-content'} />
+    <SafeAreaView
+      style={[styles.safeAreaStyle, { backgroundColor: isDarkMode ? Colors.black : Colors.white }]}
+      edges={['bottom']}>
       <ScrollView
-        contentInsetAdjustmentBehavior="automatic"
-        style={backgroundStyle}>
-        <Header />
-        <View
-          style={{
-            backgroundColor: isDarkMode ? Colors.black : Colors.white,
-          }}>
-          <Section title="Step One">
-            Edit <Text style={styles.highlight}>App.js</Text> to change this
-            screen and then come back to see your edits.
-          </Section>
-          <Section title="See Your Changes">
-            <ReloadInstructions />
-          </Section>
-          <Section title="Debug">
-            <DebugInstructions />
-          </Section>
-          <Section title="Learn More">
-            Read the docs to discover what to do next:
-          </Section>
-          <LearnMoreLinks />
-        </View>
+        showsVerticalScrollIndicator={false}
+        style={{
+          flex: 1,
+          paddingHorizontal: currentOrientation === 'LANDSCAPE' && 80,
+          backgroundColor: isDarkMode ? Colors.black : Colors.white,
+        }}>
+        <NuriHeader isDarkMode={isDarkMode} screenOrientation={currentOrientation} />
+        <NuriSection title='Device Info:'>
+          <Text
+            style={[
+              styles.sectionDescription,
+              {
+                color: isDarkMode ? Colors.light : Colors.dark,
+              },
+            ]}>
+            {'\u2219'} iOS Version: {getSystemVersion()}
+            {'\n'}
+            {'\u2219'} Model: {getModel()}
+            {'\n'}
+            {'\u2219'} Device ID: {getDeviceId()}
+            {'\n'}
+            {/* must display device ip address */}
+            {'\u2219'} Device IP Address: {ip}
+            {'\n'}
+            {/* must display app bundle identifier */}
+            {'\u2219'} Bundle Identifier: {getBundleId().slice(getBundleId().lastIndexOf('.')+1)}
+          </Text>
+        </NuriSection>
+        <NuriSection title='Deep Linking:'>
+          <TouchableOpacity onPress={onOpenLink}>
+            <Text style={[styles.sectionDescription, { color: '#0060FF' }]}>Click here to open the default browser</Text>
+          </TouchableOpacity>
+          <Text style={[styles.sectionDescription, { color: isDarkMode ? Colors.white : Colors.dark }]}>
+            Accessing "nuriCodingChallenge://" should directly redirected you to the app
+          </Text>
+        </NuriSection>
+        <NuriSection title='Document Picker:' />
+        <Text style={[styles.footer, { color: isDarkMode ? Colors.white : Colors.dark }]}>Made with 💜 by Nuri®</Text>
       </ScrollView>
     </SafeAreaView>
   );
 };
 
 const styles = StyleSheet.create({
+  safeAreaStyle: {
+    flex: 1,
+    justifyContent: 'flex-start',
+  },
   sectionContainer: {
     marginTop: 32,
     paddingHorizontal: 24,
@@ -100,12 +95,18 @@ const styles = StyleSheet.create({
     fontWeight: '600',
   },
   sectionDescription: {
-    marginTop: 8,
-    fontSize: 18,
+    fontSize: 17,
     fontWeight: '400',
+    marginTop: 8,
+    marginLeft: 16,
+    paddingHorizontal: 24,
   },
-  highlight: {
-    fontWeight: '700',
+  footer: {
+    bottom: 60,
+    alignSelf: 'center',
+    fontSize: 17,
+    fontWeight: '600',
+    textAlign: 'center',
   },
 });
 

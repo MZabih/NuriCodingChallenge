@@ -145,7 +145,6 @@
 				670069A424CDD0EA902AA93A /* Pods-NuriCodingChallenge-NuriCodingChallengeTests.debug.xcconfig */,
 				DB5A12CEFE34D54A236A2F97 /* Pods-NuriCodingChallenge-NuriCodingChallengeTests.release.xcconfig */,
 			);
-			name = Pods;
 			path = Pods;
 			sourceTree = "<group>";
 		};
@@ -485,6 +484,7 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_ENABLE_MODULES = YES;
 				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = 9WXU3L9FPC;
 				ENABLE_BITCODE = NO;
 				INFOPLIST_FILE = NuriCodingChallenge/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
@@ -511,6 +511,7 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_ENABLE_MODULES = YES;
 				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = 9WXU3L9FPC;
 				INFOPLIST_FILE = NuriCodingChallenge/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
