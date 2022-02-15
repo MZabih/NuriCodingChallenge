@@ -1,6 +1,6 @@
 import React, { useCallback, useEffect, useState } from 'react';
 
-import { ScrollView, StyleSheet, Text, TouchableOpacity } from 'react-native';
+import { ScrollView, StyleSheet, Text, useColorScheme, TouchableOpacity } from 'react-native';
 import { getBuildIdSync, getBundleId, getDeviceId, getIpAddress, getModel, getSystemVersion } from 'react-native-device-info';
 import { addOrientationListener, removeOrientationListener } from 'react-native-orientation';
 import { SafeAreaView } from 'react-native-safe-area-context';
@@ -16,7 +16,7 @@ const App: () => React.FC = () => {
   const [url] = useState('https://nuriCodingChallenge/');
   const [statusBarStyle] = useState('dark-content');
   const [ip, setIp] = useState('');
-  let isDarkMode;
+  let isDarkMode = useColorScheme() === 'dark';;
 
   useEffect(() => {
     addOrientationListener((orientation) => {
@@ -74,7 +74,9 @@ const App: () => React.FC = () => {
             Accessing "nuriCodingChallenge://" should directly redirected you to the app
           </Text>
         </NuriSection>
-        <NuriSection title='Document Picker:' />
+        <NuriSection title='Document Picker:'>
+          <NuriDocumentPicker/>
+        </NuriSection>
         <Text style={[styles.footer, { color: isDarkMode ? Colors.white : Colors.dark }]}>Made with 💜 by Nuri®</Text>
       </ScrollView>
     </SafeAreaView>
@@ -102,7 +104,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 24,
   },
   footer: {
-    bottom: 60,
+    top: 10,
     alignSelf: 'center',
     fontSize: 17,
     fontWeight: '600',

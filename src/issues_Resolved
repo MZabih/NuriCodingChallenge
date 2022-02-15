@@ -1,0 +1,14 @@
+Issues which I have resolved so far are 
+
+Fileuploading issue 
+
+
+1-Device information was giving error because while showing ip-address, `getIpAddress` method was
+returning promise and showing it on div was giving error, so I got this info on useEffect
+
+2- Implemented deep linking by integrating native code `RCTLinking` in `AppDelegate`
+
+3-Issue I observed: Actually file was getting upload but we were not setting state for that file which we were trying to show it on render. I have stored that in document, and now its been showing. 
+
+4- Theming for app was not handled properly in some files, I have imported it from useColorScheme
+and used it in my app
