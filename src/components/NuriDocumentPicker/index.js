@@ -1,23 +1,30 @@
 import React, { useState } from 'react';
-
-import { ActivityIndicator, Text, TouchableOpacity, View } from 'react-native';
-import DocumentPicker, { isInProgress } from 'react-native-document-picker';
+import moment from 'moment';
+import { ActivityIndicator, Text, TouchableOpacity, View , useColorScheme} from 'react-native';
+import DocumentPicker, { 
+  isInProgress,
+ } from 'react-native-document-picker';
 
 import Colors from '../../assets/colors';
 import { CloseButton, DocumentImage, FileImage, UploadImage } from '../../assets/images/SvgImages';
 import styles from './styles';
 
-const NuriDocumentPicker = ({ isDarkMode }): React.FC => {
+const NuriDocumentPicker = (): React.FC => {
+
+  const isDarkMode = useColorScheme() === 'dark';
   const [loading, setLoading] = useState(false);
   const [document, setDocument] = useState({});
 
   const handleError = (err) => {
     if (DocumentPicker.isCancel(err)) {
       setLoading(false);
+      console.log('error_isCancel: ',err)
     } else if (isInProgress(err)) {
       setLoading(false);
+      console.log('error_inProgress: ',err)
     } else {
       throw err;
+      console.log('err: ',err)
     }
   };
 
@@ -30,6 +37,8 @@ const NuriDocumentPicker = ({ isDarkMode }): React.FC => {
         allowMultiSelection: false,
       });
       setLoading(false);
+      console.log('res: ',res)
+      setDocument(res);
     } catch (err) {
       if (DocumentPicker.isCancel(err)) {
         handleError(err);
@@ -39,7 +48,9 @@ const NuriDocumentPicker = ({ isDarkMode }): React.FC => {
     }
   };
 
-  const handleDeletePress = () => {};
+  const handleDeletePress = () => {
+    setDocument({})
+  };
 
   if (loading) {
     return (
@@ -54,11 +65,10 @@ const NuriDocumentPicker = ({ isDarkMode }): React.FC => {
       </View>
     );
   }
-
   return (
     <View style={[styles.container, { borderStyle: document?.name ? 'solid' : 'dashed' }]}>
       {document ? (
-        <TouchableOpacity onPress={() => {}} style={{ paddingVertical: 8 }}>
+        <TouchableOpacity onPress={() => {handlePress()}} style={{ paddingVertical: 8 }}>
           <UploadImage width={45} margin={14} />
           <Text>
             <Text style={styles.buttonTextBlue}>Browse</Text> <Text style={styles.buttonText}>your files</Text>
